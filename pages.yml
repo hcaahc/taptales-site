@@ -1,0 +1,225 @@
+# Pages CMS configuration — https://pagescms.org/docs/configuration/
+media:
+  input: media
+  output: /media
+
+content:
+  - name: products
+    label: Products
+    type: file
+    path: products.json
+    format: json
+    list: true
+    fields:
+      - name: name
+        label: Product name
+        type: string
+        required: true
+      - name: type
+        label: Type
+        type: select
+        required: true
+        options:
+          values:
+            - { name: game, label: Game }
+            - { name: app, label: App }
+            - { name: media, label: Media / video }
+      - name: tagline
+        label: Tagline (one short line)
+        type: string
+        options:
+          maxlength: 90
+      - name: description
+        label: Short description (1–2 sentences)
+        type: text
+        options:
+          maxlength: 320
+      - name: genres
+        label: Genres / tags
+        type: string
+        list: true
+      - name: links
+        label: Download & watch links
+        type: object
+        list: true
+        fields:
+          - name: platform
+            label: Platform
+            type: select
+            options:
+              values:
+                - { name: app-store, label: App Store }
+                - { name: google-play, label: Google Play }
+                - { name: steam, label: Steam }
+                - { name: youtube, label: YouTube }
+                - { name: tiktok, label: TikTok }
+                - { name: facebook, label: Facebook }
+                - { name: website, label: Website }
+          - name: url
+            label: Link
+            type: string
+            required: true
+      - name: icon
+        label: App icon (square, 512×512)
+        type: image
+      - name: cover
+        label: Cover image (optional, landscape, fills the big panel)
+        type: image
+      - name: screenshots
+        label: Screenshots
+        type: object
+        list: { max: 8 }
+        fields:
+          - name: image
+            label: Image
+            type: image
+          - name: caption
+            label: Caption (optional)
+            type: string
+      - name: shape
+        label: Screenshot shape
+        type: select
+        default: portrait
+        options:
+          values:
+            - { name: portrait, label: Portrait (phone screenshots) }
+            - { name: landscape, label: Landscape (video thumbnails) }
+      - name: accent
+        label: Accent colour
+        type: select
+        default: sun
+        options:
+          values:
+            - { name: sky, label: Blue }
+            - { name: pink, label: Pink }
+            - { name: tomato, label: Red }
+            - { name: sun, label: Yellow }
+            - { name: mint, label: Green }
+      - name: illustration
+        label: Placeholder illustration (shown when there is no icon/cover)
+        type: select
+        default: star
+        options:
+          values: [frog, cake, ship, book, plant, star]
+      - name: sample
+        label: Show "Sample" badge
+        type: boolean
+        default: false
+
+  - name: site
+    label: Site settings
+    type: file
+    path: site.json
+    format: json
+    fields:
+      - name: email
+        label: Contact email
+        type: string
+        required: true
+      - name: socials
+        label: Social & store links (Follow section)
+        type: object
+        list: true
+        fields:
+          - name: platform
+            label: Platform
+            type: select
+            options:
+              values:
+                - { name: app-store, label: App Store }
+                - { name: google-play, label: Google Play }
+                - { name: youtube, label: YouTube }
+                - { name: tiktok, label: TikTok }
+                - { name: facebook, label: Facebook }
+                - { name: instagram, label: Instagram }
+                - { name: website, label: Website }
+          - name: label
+            label: Name
+            type: string
+          - name: subtitle
+            label: Small text
+            type: string
+          - name: url
+            label: Link
+            type: string
+            required: true
+
+  - name: legal
+    label: Legal pages
+    type: group
+    items:
+      - name: terms
+        label: Terms & Conditions
+        type: file
+        path: terms.json
+        format: json
+        operations: { create: false, delete: false, rename: false }
+        fields:
+          - name: title
+            label: Title
+            type: string
+            required: true
+          - name: updated
+            label: Last updated
+            type: date
+            options:
+              format: yyyy-MM-dd
+          - name: intro
+            label: Intro
+            type: text
+          - name: body
+            label: Content (use Heading 2 for each numbered section)
+            type: rich-text
+            options:
+              format: markdown
+              media: false
+      - name: privacy
+        label: Privacy Policy
+        type: file
+        path: privacy.json
+        format: json
+        operations: { create: false, delete: false, rename: false }
+        fields:
+          - name: title
+            label: Title
+            type: string
+            required: true
+          - name: updated
+            label: Last updated
+            type: date
+            options:
+              format: yyyy-MM-dd
+          - name: intro
+            label: Intro
+            type: text
+          - name: body
+            label: Content (use Heading 2 for each numbered section)
+            type: rich-text
+            options:
+              format: markdown
+              media: false
+      - name: policy
+        label: Product & Service Policy
+        type: file
+        path: policy.json
+        format: json
+        operations: { create: false, delete: false, rename: false }
+        fields:
+          - name: title
+            label: Title
+            type: string
+            required: true
+          - name: updated
+            label: Last updated
+            type: date
+            options:
+              format: yyyy-MM-dd
+          - name: intro
+            label: Intro
+            type: text
+          - name: body
+            label: Content (use Heading 2 for each numbered section)
+            type: rich-text
+            options:
+              format: markdown
+              media: false

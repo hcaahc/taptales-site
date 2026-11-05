@@ -277,7 +277,7 @@ const mainEl = $('top');
 let lastView = 'home';
 function loadLegal(id) {
   if (loaded[id]) return;
-  loaded[id] = getJSON(`/content/legal/${id}.json`)
+  loaded[id] = getJSON(`/${id}.json`)
     .then(doc => renderLegal(id, doc))
     .catch(() => { $(id).querySelector('[data-f="body"]').innerHTML = `<p>This page couldn't be loaded. Please try again, or email ${esc(email.textContent)}.</p>`; loaded[id] = null; });
 }
@@ -300,7 +300,7 @@ addEventListener('hashchange', route);
 route();
 
 /* ---------- load content ---------- */
-getJSON('/content/products.json').then(renderProducts)
+getJSON('/products.json').then(renderProducts)
   .catch(() => { $('productsLoading').textContent = "Products couldn't be loaded. Please refresh the page."; });
-getJSON('/content/site.json').then(renderSite).catch(() => {});
+getJSON('/site.json').then(renderSite).catch(() => {});
 })();
