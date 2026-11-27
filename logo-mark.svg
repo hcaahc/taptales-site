@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 10 274 286"><title>Taptales Studio</title><defs id="defs3">
+    <linearGradient id="happy" gradientUnits="userSpaceOnUse" x1="300" y1="410" x2="950" y2="800">
+      <stop stop-color="#6500CA" id="stop1"/>
+      <stop offset=".52" stop-color="#A000CB" id="stop2"/>
+      <stop offset="1" stop-color="#F90091" id="stop3"/>
+    </linearGradient>
+  </defs><g transform="translate(20 20) scale(1)" id="g4">
+    <g transform="scale(.38) translate(-273 -274)" id="g3">
+      <path d="M 421 447 C 431 418 443 376 454 342 C 467 301 502 274 544 274 C 592 274 625 311 612 359 L 585 443 Q 584 448 590 448 L 655 448 C 699 448 733 476 733 515 C 733 562 698 598 652 598 H 547 Q 541 598 539 605 L 526 644 C 502 719 550 788 611 806 C 686 828 764 774 773 700 C 776 681 775 661 775 648 C 775 602 811 564 857 564 C 905 564 942 601 942 649 C 942 829 807 974 627 974 C 478 974 361 855 361 708 C 361 670 371 635 381 604 Q 383 599 376 599 H 350 C 306 599 273 570 273 531 C 273 485 310 449 355 449 H 416 Q 420 449 421 447 Z" fill="url(#happy)" id="path3"/>
+      <circle cx="843.5" cy="425.5" r="80.5" fill="#FFBC00" id="circle3"/>
+    </g>
+  </g></svg>

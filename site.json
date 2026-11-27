@@ -14,28 +14,16 @@
       "url": "https://play.google.com/store"
     },
     {
-      "platform": "youtube",
-      "label": "YouTube",
-      "subtitle": "Shorts, trailers, series",
-      "url": "https://www.youtube.com/"
-    },
-    {
-      "platform": "tiktok",
-      "label": "TikTok",
-      "subtitle": "Daily clips & fun",
-      "url": "https://www.tiktok.com/"
+      "platform": "instagram",
+      "label": "Instagram",
+      "subtitle": "Art & behind the scenes",
+      "url": "https://www.instagram.com/"
     },
     {
       "platform": "facebook",
       "label": "Facebook",
       "subtitle": "Community & events",
       "url": "https://www.facebook.com/"
-    },
-    {
-      "platform": "instagram",
-      "label": "Instagram",
-      "subtitle": "Art & characters",
-      "url": "https://www.instagram.com/"
     }
   ]
 }

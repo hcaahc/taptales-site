@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Taptales Studio</title>
-<meta name="description" content="Taptales Studio makes playful games, friendly apps and animated stories for players everywhere.">
+<meta name="description" content="Taptales Studio makes playful games and friendly apps for players everywhere.">
 <meta property="og:title" content="Taptales Studio">
 <meta property="og:description" content="Playful games, friendly apps and animated stories.">
 <meta property="og:url" content="https://taptales.net/">
 <link rel="canonical" href="https://taptales.net/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='10' y='10' width='48' height='48' rx='14' fill='%23FFC22E'/%3E%3Crect x='4' y='4' width='48' height='48' rx='14' fill='%23FF5A3C'/%3E%3Ccircle cx='28' cy='28' r='9' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="logo-mark.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
@@ -17,128 +17,89 @@
 <link rel="stylesheet" href="/site.css">
 </head>
 <body>
-<header>
-  <nav class="wrap" aria-label="Main">
-    <a class="logo" href="#top"><span class="logo-mark" aria-hidden="true"><span></span></span>Taptales</a>
+<header class="site-head">
+  <nav class="wrap nav" aria-label="Main">
+    <a class="logo" href="#top" aria-label="Taptales Studio home"><img src="logo.svg" alt="Taptales Studio" width="1155" height="306"></a>
     <div class="nav-links">
-      <a href="#products">Products</a>
-      <a href="#make">What we make</a>
-      <a href="#studio">Studio</a>
-      <a class="btn small" href="#follow">Follow us</a>
+      <a href="#products">Games</a>
+      <a href="#studio">About</a>
+      <a href="#follow">Follow</a>
+      <a class="btn small" href="#products">Play our games</a>
     </div>
   </nav>
 </header>
 
 <main id="top">
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div>
-        <p class="label">Games · Apps · Media</p>
-        <h1 style="margin-top:14px">Every <span class="tap">tap</span> tells a <span class="tale">tale.</span></h1>
-        <p class="lede">Taptales Studio makes playful games, friendly apps and animated stories, and publishes them for players everywhere on the App Store, Google Play, YouTube and TikTok.</p>
-        <div class="hero-cta">
-          <a class="btn" href="#products">Explore our products</a>
-          <a class="btn ghost" href="#follow">Follow us</a>
-        </div>
-      </div>
-      <div class="stage" id="stage" role="img" aria-label="Interactive play area: tap to drop colourful shapes">
-        <canvas id="toy"></canvas>
-        <div class="stage-hud"><span>Taps <b id="taps">0</b></span><span>Lvl 01</span></div>
-        <div class="stage-hint" id="hint">Tap anywhere to play</div>
-      </div>
-    </div>
-    <div class="strip" aria-hidden="true">
-      <div class="strip-track">
-        <span>Now on App Store <i></i> Google Play <i></i> YouTube <i></i> TikTok <i></i> Casual games <i></i> Kids' stories <i></i> Everyday apps <i></i> Animated shorts <i></i></span>
-        <span>Now on App Store <i></i> Google Play <i></i> YouTube <i></i> TikTok <i></i> Casual games <i></i> Kids' stories <i></i> Everyday apps <i></i> Animated shorts <i></i></span>
+  <section class="wrap hero-wrap">
+    <div class="hero" id="hero">
+      <span class="deco d1" aria-hidden="true"></span><span class="deco d2" aria-hidden="true"></span><span class="deco d3" aria-hidden="true"></span><span class="deco d4" aria-hidden="true"></span>
+      <h1 class="bounce" id="headline" aria-label="Every tap tells a tale.">
+        <span class="w">Every</span> <span class="w sticker s-yellow">tap</span><br>
+        <span class="w">tells</span> <span class="w">a</span> <span class="w sticker s-magenta">tale.</span>
+      </h1>
+      <p class="lede">We make playful games and friendly apps for players everywhere, on the App Store and Google Play.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#products">See our games</a>
+        <a class="btn outline" href="#follow">Follow us</a>
       </div>
     </div>
   </section>
 
-  <section class="block" id="products">
+  <section class="games" id="products">
     <div class="wrap">
       <div class="sec-head">
-        <div><p class="label">Our products</p><h2>Play, use, watch.</h2></div>
-        <p>Pick a product to see what it's about and where to get it. Swipe or use the arrows to browse.</p>
+        <h2>Our games</h2>
+        <p id="gamesCount">3 games so far, with more on the way.</p>
       </div>
+      <div class="feats" id="gTrack"><p class="loading" id="productsLoading">Loading games…</p></div>
+    </div>
+  </section>
 
-      <div class="filters" role="toolbar" aria-label="Filter products" id="filters"></div>
-      <div class="shelf" role="tablist" aria-label="Products" id="shelf"></div>
-
-      <p class="loading" id="productsLoading">Loading products…</p>
-      <article class="detail" id="detail" aria-live="polite" hidden>
-        <div class="detail-grid">
-          <div class="art" id="art">
-            <div class="layer bg-shapes" id="bgShapes"></div>
-            <div class="layer hero-art" id="heroArt"></div>
-            <span class="badge" id="artBadge">Sample</span>
-            <span class="counter" id="counter">01 / 06</span>
-            <div class="arrows">
-              <button type="button" id="prev" aria-label="Previous product"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M11 3 5 9l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-              <button type="button" id="next" aria-label="Next product"><svg width="18" height="18" viewBox="0 0 18 18"><path d="m7 3 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            </div>
-          </div>
-          <div class="info swap" id="info"></div>
+  <section class="about" id="studio">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Small team, big on play.</h2>
+        <p>Taptales Studio is a small team of designers, developers and artists. Made in Vietnam, played around the world.</p>
+      </div>
+      <div class="tiles">
+        <article class="tile t-purple"><span class="tile-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10a5 5 0 0 1 4.6 7l-1 2.3a2.6 2.6 0 0 1-4.3.7L14.6 15H9.4l-1.7 2a2.6 2.6 0 0 1-4.3-.7l-1-2.3A5 5 0 0 1 7 7z" fill="currentColor"/><path d="M7 9.5v3M5.5 11h3" stroke="var(--vi-bg)" stroke-width="1.8" stroke-linecap="round"/><circle cx="16" cy="10" r="1.2" fill="var(--vi-bg)"/><circle cx="17.8" cy="12.3" r="1.2" fill="var(--vi-bg)"/></svg></span><h3>Fun is a feature</h3><p>Even a utility app deserves a moment of joy. We design for that on purpose.</p></article>
+        <article class="tile t-violet"><span class="tile-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-8-4.7-8-10.7A4.6 4.6 0 0 1 12 6.6a4.6 4.6 0 0 1 8 3.2c0 6-8 10.7-8 10.7z" fill="currentColor"/></svg></span><h3>Players first</h3><p>We read every review and ship updates based on what players ask for.</p></article>
+        <article class="tile t-magenta"><span class="tile-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 3.5c3 0 5.5 0 6 .5s.5 3 .5 6c-1 3-4 6-7.5 7.7l-1.6-1.6-2.3-2.3-1.6-1.6C9.7 8.6 11.5 4.5 14.5 3.5z" fill="currentColor"/><circle cx="15.6" cy="8.4" r="1.7" fill="var(--vi-bg)"/><path d="M8.3 12.6 5 12.9l-2 2.3 3.6.6M11.4 15.7l-.3 3.3-2.3 2-.6-3.6" fill="currentColor"/><path d="M6.4 17.6c-1 1-1.4 2.5-1.4 2.5s1.5-.4 2.5-1.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><h3>Stories that travel</h3><p>Our characters live across games, apps and videos, so fans can follow them anywhere.</p></article>
+        <article class="tile t-yellow"><span class="tile-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 19.5 5.6v5.8c0 4.8-3.2 8.5-7.5 9.8-4.3-1.3-7.5-5-7.5-9.8V5.6z" fill="currentColor"/><path d="m8.6 12 2.4 2.4 4.6-4.8" fill="none" stroke="var(--vi-bg)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3>Safe for families</h3><p>Kids' titles come with age-appropriate content and parent-friendly settings.</p></article>
+      </div>
+      <article class="founder">
+        <div class="founder-pic">
+          <span class="fd fd1" aria-hidden="true"></span><span class="fd fd2" aria-hidden="true"></span>
+          <img src="founder.png" alt="Avatar of Ha Truong, founder of Taptales Studio" width="800" height="800">
         </div>
-        <div class="shots-wrap swap" id="shotsWrap">
-          <div class="shots-head"><span class="label" id="shotsLabel">Screenshots</span><span class="label">Scroll →</span></div>
-          <div class="shots" id="shots"></div>
+        <div class="founder-copy">
+          <p class="founder-kicker">Meet the founder</p>
+          <h3>Ha Truong</h3>
+          <p class="founder-role">Founder, Taptales Studio</p>
+          <blockquote>“I'm passionate about building games and products, from the first sketch to the moment a player smiles. With Taptales, I want to bring lots of fun, delightful things to people everywhere.”</blockquote>
         </div>
       </article>
     </div>
   </section>
 
-  <section class="block" id="make" style="padding-top:0">
-    <div class="wrap">
-      <div class="sec-head">
-        <div><p class="label">What we make</p><h2>Three crafts, one team.</h2></div>
-        <p>We design, build, publish and keep updating our own products. Game makers, developers and animators work side by side.</p>
-      </div>
-      <div class="make">
-        <article class="make-card"><h3>Games</h3><p>Casual, puzzle and arcade games built for quick, happy sessions on your phone, with new levels and events every season.</p><p class="where">App Store · Google Play</p></article>
-        <article class="make-card"><h3>Apps</h3><p>Small everyday apps that do one thing well and feel nice to use: habits, learning and bedtime stories for kids.</p><p class="where">App Store · Google Play</p></article>
-        <article class="make-card"><h3>Media</h3><p>Animated shorts, characters and series that grow with our games and reach audiences on social platforms.</p><p class="where">YouTube · TikTok · Facebook</p></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="block" id="studio" style="padding-top:0">
-    <div class="wrap values">
-      <div>
-        <p class="label">The studio</p>
-        <h2>Small team, big on play.</h2>
-        <p class="intro">Taptales started with a simple belief: the best digital products feel like a good story. They're easy to start, fun to explore and hard to put down. We're a compact team of designers, developers and artists, made in Vietnam and played worldwide.</p>
-      </div>
-      <div class="val-list">
-        <div class="val"><span class="dot" style="background:var(--tomato)"></span><div><h3>Fun is a feature</h3><p>Even a utility app deserves a moment of joy. We design for that on purpose.</p></div></div>
-        <div class="val"><span class="dot" style="background:var(--sun)"></span><div><h3>Players first</h3><p>We read every review and ship updates based on what players actually ask for.</p></div></div>
-        <div class="val"><span class="dot" style="background:var(--mint)"></span><div><h3>Stories that travel</h3><p>Our characters live across games, apps and videos, so fans can follow them everywhere.</p></div></div>
-        <div class="val"><span class="dot" style="background:var(--sky)"></span><div><h3>Safe for families</h3><p>Kids' titles are made with age-appropriate content and parent-friendly settings.</p></div></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="block" id="follow" style="padding-top:0">
-    <div class="wrap">
-      <div class="follow">
-        <div>
-          <p class="label">Stay in the loop</p>
-          <h2 style="margin-top:10px">Follow the tales.</h2>
-          <p class="sub">New games, updates and behind-the-scenes clips land on our channels first. For partnerships and press, email us.</p>
-          <div class="mail">
-            <code id="email">support@taptales.net</code>
-            <button class="copy" id="copyBtn" type="button">Copy email</button>
-          </div>
+  <section class="wrap follow-wrap" id="follow">
+    <div class="follow">
+      <div class="follow-copy">
+        <h2>Follow the tales.</h2>
+        <p class="sub">New games and updates land on our channels first. For partnerships and press, email us.</p>
+        <div class="mail">
+          <code id="email">support@taptales.net</code>
+          <button class="copy" id="copyBtn" type="button">Copy email</button>
         </div>
-        <div class="socials" id="socials"></div>
       </div>
+      <div class="socials" id="socials"></div>
     </div>
   </section>
 </main>
 
 <article class="legal" id="terms" hidden>
   <div class="wrap">
-    <a class="back" href="#top"><svg width="16" height="16" viewBox="0 0 18 18"><path d="M11 3 5 9l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Taptales</a>
+    <a class="back" href="#top"><svg width="16" height="16" viewBox="0 0 18 18"><path d="M11 3 5 9l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Taptales Studio</a>
     <div class="legal-grid">
       <nav class="toc" aria-label="Sections"><p class="label">On this page</p></nav>
       <div>
@@ -154,7 +115,7 @@
 </article>
 <article class="legal" id="privacy" hidden>
   <div class="wrap">
-    <a class="back" href="#top"><svg width="16" height="16" viewBox="0 0 18 18"><path d="M11 3 5 9l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Taptales</a>
+    <a class="back" href="#top"><svg width="16" height="16" viewBox="0 0 18 18"><path d="M11 3 5 9l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Taptales Studio</a>
     <div class="legal-grid">
       <nav class="toc" aria-label="Sections"><p class="label">On this page</p></nav>
       <div>
@@ -170,7 +131,7 @@
 </article>
 <article class="legal" id="policy" hidden>
   <div class="wrap">
-    <a class="back" href="#top"><svg width="16" height="16" viewBox="0 0 18 18"><path d="M11 3 5 9l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Taptales</a>
+    <a class="back" href="#top"><svg width="16" height="16" viewBox="0 0 18 18"><path d="M11 3 5 9l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Taptales Studio</a>
     <div class="legal-grid">
       <nav class="toc" aria-label="Sections"><p class="label">On this page</p></nav>
       <div>
@@ -185,11 +146,11 @@
   </div>
 </article>
 
-<footer>
+<footer class="site-foot">
   <div class="wrap foot">
-    <span>© <span id="year">2026</span> Taptales Studio</span>
-    <div class="links"><a href="#products">Products</a><a href="#make">What we make</a><a href="#studio">Studio</a><a href="#follow">Follow</a></div>
-    <div class="legal-links"><a href="#terms">Terms &amp; Conditions</a><a href="#privacy">Privacy Policy</a><a href="#policy">Product &amp; Service Policy</a></div>
+    <a class="logo" href="#top" aria-label="Taptales Studio home"><img src="logo.svg" alt="Taptales Studio" width="1155" height="306"></a>
+    <div class="links"><a href="#products">Games</a><a href="#studio">About</a><a href="#follow">Follow</a></div>
+    <div class="legal-links"><span>© <span id="year">2026</span> Taptales Studio</span><a href="#terms">Terms &amp; Conditions</a><a href="#privacy">Privacy Policy</a><a href="#policy">Product &amp; Service Policy</a></div>
   </div>
 </footer>
 <script src="/site.js" defer></script>

@@ -27,8 +27,9 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const getJSON = url => fetch(url, {cache: 'no-cache'}).then(r => { if (!r.ok) throw new Error(url + ' ' + r.status); return r.json(); });
 const TYPES = {game: 'Game', app: 'App', media: 'Media'};
-const ACCENTS = ['sky', 'pink', 'tomato', 'sun', 'mint'];
-const accentVar = p => '--' + (ACCENTS.includes(p.accent) ? p.accent : 'sun');
+const ACCENT_MAP = {purple: 'purple', violet: 'violet', magenta: 'magenta', yellow: 'yellow', sky: 'purple', pink: 'violet', tomato: 'magenta', sun: 'yellow', mint: 'violet'};
+const accentName = (p, i = 0) => ACCENT_MAP[p.accent] || ['purple', 'magenta', 'yellow', 'violet'][i % 4];
+const accentVar = p => '--' + accentName(p);
 const strip = svg => svg.replace(/^<svg[^>]*>|<\/svg>$/g, '');
 const artFor = p => ART[p.illustration] || ART.star;
 
@@ -69,92 +70,29 @@ const shotSvg = (p, i) => {
   return `<svg viewBox="0 0 90 180" preserveAspectRatio="xMidYMid slice">${layouts[i%4]}</svg>`;
 };
 
-/* ---------- products ---------- */
-let PRODUCTS = [], filter = 'all', current = 0;
-const shelf = $('shelf'), filters = $('filters'), detail = $('detail');
-
+/* ---------- games: icon-led cards (key art optional) ---------- */
+const track = $('gTrack');
 function renderProducts(list) {
-  PRODUCTS = (Array.isArray(list) ? list : []).filter(p => p && p.name);
-  $('productsLoading').hidden = PRODUCTS.length > 0;
-  if (!PRODUCTS.length) { $('productsLoading').textContent = 'New products are coming soon.'; return; }
-  detail.hidden = false;
-  const counts = {all: PRODUCTS.length};
-  PRODUCTS.forEach(p => counts[p.type] = (counts[p.type] || 0) + 1);
-  filters.innerHTML = [['all','All'],['game','Games'],['app','Apps'],['media','Media']]
-    .filter(([k]) => k === 'all' || counts[k])
-    .map(([k,l]) => `<button type="button" data-f="${k}" aria-pressed="${k==='all'}">${l}<span class="n">${counts[k]||0}</span></button>`).join('');
-  shelf.innerHTML = PRODUCTS.map((p,i) => `<button class="shelf-item" role="tab" type="button" data-i="${i}" aria-selected="false" aria-controls="detail"><span class="ic">${p.icon ? `<img src="${esc(p.icon)}" alt="" loading="lazy">` : iconSvg(p)}</span><span>${esc(p.name)}</span></button>`).join('');
-  select(0, false);
-}
-
-const visible = () => PRODUCTS.map((p,i) => i).filter(i => filter === 'all' || PRODUCTS[i].type === filter);
-
-function fill(i) {
-  const p = PRODUCTS[i], acc = accentVar(p);
-  detail.style.setProperty('--accent', `var(${acc})`);
-  const art = $('art');
-  art.classList.toggle('has-cover', !!p.cover);
-  art.style.backgroundImage = p.cover ? `url("${encodeURI(p.cover)}")` : '';
-  $('bgShapes').innerHTML = bgShapes(i * 97 + 13);
-  $('heroArt').innerHTML = p.cover ? '' : p.icon ? `<img src="${esc(p.icon)}" alt="${esc(p.name)} icon">` : artFor(p).replace('var(--accent-bg,#FFC22E)', `var(${acc})`);
-  $('artBadge').hidden = !p.sample;
-  const vis = visible(), pos = vis.indexOf(i) + 1;
-  $('counter').textContent = `${String(pos).padStart(2,'0')} / ${String(vis.length).padStart(2,'0')}`;
-  const genres = (p.genres || []).filter(Boolean);
-  const links = (p.links || []).filter(l => l && l.url);
-  $('info').innerHTML = `
-    <div class="kind"><span class="pill type">${TYPES[p.type] || 'Product'}</span>${genres.map(g => `<span class="pill">${esc(g)}</span>`).join('')}</div>
-    <h3>${esc(p.name)}</h3>
-    ${p.tagline ? `<p class="tagline">${esc(p.tagline)}</p>` : ''}
-    ${p.description ? `<p class="desc">${esc(p.description)}</p>` : ''}
-    ${links.length ? `<div class="dl">${links.map(l => { const k = plat(l.platform); return `<a class="store" href="${esc(l.url)}" target="_blank" rel="noopener">${k.icon}<span><small>${k.pre}</small><b>${k.label}</b></span></a>`; }).join('')}</div>` : ''}`;
-  const shots = (p.screenshots || []).filter(s => s && (s.image || s.caption));
-  const land = p.shape === 'landscape';
-  $('shotsWrap').hidden = !shots.length;
-  $('shotsLabel').textContent = land ? 'Videos' : 'Screenshots';
-  $('shots').innerHTML = shots.map((s,k) => `<div class="shot${land ? ' video' : ''}">${s.image ? `<img src="${esc(s.image)}" alt="${esc(s.caption || p.name + ' screenshot')}" loading="lazy">` : shotSvg(p,k)}${s.caption ? `<span class="cap">${esc(s.caption)}</span>` : ''}</div>`).join('');
-  $('shots').scrollLeft = 0;
-  shelf.querySelectorAll('.shelf-item').forEach(b => b.setAttribute('aria-selected', String(+b.dataset.i === i)));
-}
-
-function select(i, scrollShelf = true) {
-  if (i === undefined) return;
-  if (i === current && detail.dataset.ready) return;
-  current = i;
-  if (scrollShelf) { const b = shelf.querySelector(`[data-i="${i}"]`); b && shelf.scrollTo({left: b.offsetLeft - shelf.offsetLeft - 8, behavior: reduce ? 'auto' : 'smooth'}); }
-  if (reduce || !detail.dataset.ready) { fill(i); detail.dataset.ready = 1; return; }
-  detail.classList.add('out');
-  setTimeout(() => { fill(i); requestAnimationFrame(() => detail.classList.remove('out')); }, 230);
-}
-function move(d) { const v = visible(); if (!v.length) return; const k = v.indexOf(current); select(v[(k + d + v.length) % v.length]); }
-
-shelf.addEventListener('click', e => { const b = e.target.closest('.shelf-item'); if (b) select(+b.dataset.i); });
-shelf.addEventListener('keydown', e => {
-  if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-  e.preventDefault(); move(e.key === 'ArrowRight' ? 1 : -1);
-  shelf.querySelector(`[data-i="${current}"]`)?.focus();
-});
-filters.addEventListener('click', e => {
-  const b = e.target.closest('button'); if (!b) return;
-  filter = b.dataset.f;
-  filters.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-  shelf.querySelectorAll('.shelf-item').forEach(x => x.hidden = !(filter === 'all' || PRODUCTS[+x.dataset.i].type === filter));
-  const v = visible();
-  if (v.includes(current)) fill(current); else select(v[0]);
-});
-$('prev').addEventListener('click', () => move(-1));
-$('next').addEventListener('click', () => move(1));
-let sx = null;
-$('art').addEventListener('pointerdown', e => { if (!e.target.closest('button')) sx = e.clientX; });
-$('art').addEventListener('pointerup', e => { if (sx === null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 40) move(dx < 0 ? 1 : -1); });
-if (!reduce && matchMedia('(hover:hover)').matches) {
-  const art = $('art'), hero = $('heroArt'), bg = $('bgShapes');
-  art.addEventListener('pointermove', e => {
-    const r = art.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
-    hero.style.transform = `translate(${x*22}px,${y*18}px) rotate(${x*6}deg)`;
-    bg.style.transform = `translate(${-x*14}px,${-y*10}px)`;
-  });
-  art.addEventListener('pointerleave', () => { hero.style.transform = ''; bg.style.transform = ''; });
+  const items = (Array.isArray(list) ? list : []).filter(p => p && p.name);
+  const count = $('gamesCount');
+  if (!items.length) { $('productsLoading').textContent = 'Our first games are on the way.'; return; }
+  if (count) count.textContent = items.length === 1 ? 'Our first game, with more on the way.' : `${items.length} games so far, with more on the way.`;
+  track.dataset.count = items.length;
+  track.innerHTML = items.map((p, i) => {
+    const acc = accentName(p, i);
+    const links = (p.links || []).filter(l => l && l.url);
+    const text = p.description || p.tagline || '';
+    return `<article class="gcard t-${acc}">
+      ${p.cover ? `<div class="gcard-cover"><img src="${esc(p.cover)}" alt="" loading="lazy"></div>` : ''}
+      <span class="gcard-icon">${p.icon ? `<img src="${esc(p.icon)}" alt="${esc(p.name)} icon" loading="lazy">` : iconSvg({...p, accent: acc})}</span>
+      <div class="gcard-body">
+        ${TYPES[p.type] ? `<span class="gcard-kind">${TYPES[p.type]}</span>` : ''}
+        <h3>${esc(p.name)}</h3>
+        ${text ? `<p>${esc(text)}</p>` : ''}
+      </div>
+      ${links.length ? `<div class="gcard-links">${links.map(l => { const k = plat(l.platform); return `<a href="${esc(l.url)}" target="_blank" rel="noopener">${k.icon}<span><small>${k.pre}</small>${k.label}</span></a>`; }).join('')}</div>` : ''}
+    </article>`;
+  }).join('') + `<a class="feat-soon" href="#follow"><span class="soon-dots" aria-hidden="true"><i></i><i></i><i></i></span><span><b>Next game in the works</b><small>Follow us to hear about it first</small></span></a>`;
 }
 
 /* ---------- site settings (email, social links) ---------- */
@@ -222,43 +160,32 @@ function renderLegal(id, doc) {
     toc.appendChild(b);
   });
 }
-/* ---------- hero tap toy ---------- */
-const stage = $('stage'), cv = $('toy'), ctx = cv.getContext('2d'), tapsEl = $('taps'), hint = $('hint');
-let W=0,H=0,dpr=1,taps=0,bodies=[],raf=null;
-const kinds=['circle','star','tri','square'], colorVars=['--tomato','--sun','--mint','--sky','--pink'];
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-function resize(){const r=stage.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);draw();}
-function make(x,y,vy){const s=18+Math.random()*26;return{x,y,vx:(Math.random()-.5)*6,vy:vy??-Math.random()*4,r:s,a:Math.random()*6.28,va:(Math.random()-.5)*.15,kind:kinds[Math.floor(Math.random()*4)],c:colorVars[Math.floor(Math.random()*5)]};}
-function seed(){const n=9;for(let i=0;i<n;i++){const b=make((i+.5)*(W/n),0,0);b.r=22+(i%3)*8;b.y=H-b.r-2-(i%2)*30;b.vx=0;b.vy=0;b.va=0;bodies.push(b);}}
-function shape(b){ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.a);ctx.fillStyle=css(b.c);ctx.strokeStyle=css('--ink');ctx.lineWidth=3;ctx.beginPath();const r=b.r;
-  if(b.kind==='circle')ctx.arc(0,0,r,0,6.283);
-  else if(b.kind==='square'){const s=r*1.6;ctx.roundRect?ctx.roundRect(-s/2,-s/2,s,s,r*.35):ctx.rect(-s/2,-s/2,s,s);}
-  else if(b.kind==='tri'){ctx.moveTo(0,-r);ctx.lineTo(r*.95,r*.75);ctx.lineTo(-r*.95,r*.75);ctx.closePath();}
-  else{for(let i=0;i<10;i++){const rr=i%2?r*.48:r,t=i*Math.PI/5-Math.PI/2;ctx.lineTo(Math.cos(t)*rr,Math.sin(t)*rr);}ctx.closePath();}
-  ctx.fill();ctx.stroke();
-  if(b.kind==='circle'){ctx.fillStyle='#1D1842';ctx.beginPath();ctx.arc(-r*.3,-r*.12,r*.1,0,6.283);ctx.arc(r*.3,-r*.12,r*.1,0,6.283);ctx.fill();ctx.strokeStyle='#1D1842';ctx.beginPath();ctx.lineWidth=2.5;ctx.arc(0,r*.12,r*.28,.2,Math.PI-.2);ctx.stroke();}
-  ctx.restore();}
-function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle=css('--line');for(let x=18;x<W;x+=28)for(let y=48;y<H;y+=28){ctx.beginPath();ctx.arc(x,y,1.6,0,6.283);ctx.fill();}bodies.forEach(shape);}
-function step(){let moving=false;
-  for(const b of bodies){b.vy+=.45;b.x+=b.vx;b.y+=b.vy;b.a+=b.va;
-    if(b.y+b.r>H){b.y=H-b.r;b.vy*=-.55;b.vx*=.9;b.va*=.8;if(Math.abs(b.vy)<1)b.vy=0;}
-    if(b.x-b.r<0){b.x=b.r;b.vx*=-.7;} if(b.x+b.r>W){b.x=W-b.r;b.vx*=-.7;}
-    if(Math.abs(b.vx)>.05||Math.abs(b.vy)>.05||Math.abs(b.va)>.002)moving=true;
-    if(b.y+b.r>=H-.5){b.vx*=.96;b.va*=.9;}}
-  for(let i=0;i<bodies.length;i++)for(let j=i+1;j<bodies.length;j++){const a=bodies[i],c=bodies[j],dx=c.x-a.x,dy=c.y-a.y,d=Math.hypot(dx,dy)||1,m=(a.r+c.r)*.85;
-    if(d<m){const p=(m-d)/2,nx=dx/d,ny=dy/d;a.x-=nx*p;a.y-=ny*p;c.x+=nx*p;c.y+=ny*p;const rv=(c.vx-a.vx)*nx+(c.vy-a.vy)*ny;if(rv<0){a.vx+=rv*nx*.5;a.vy+=rv*ny*.5;c.vx-=rv*nx*.5;c.vy-=rv*ny*.5;}}}
-  draw();raf=moving?requestAnimationFrame(step):null;}
-stage.addEventListener('pointerdown',e=>{const r=stage.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,n=reduce?1:3;
-  for(let i=0;i<n;i++)bodies.push(make(x+(i-1)*10,y,-4-Math.random()*5));
-  if(bodies.length>42)bodies.splice(0,bodies.length-42);
-  taps++;tapsEl.textContent=taps;hint.style.opacity='0';
-  if(reduce){for(let k=0;k<200;k++){step();if(raf)cancelAnimationFrame(raf);}raf=null;draw();}
-  else if(!raf)raf=requestAnimationFrame(step);});
-resize();seed();draw();
-let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{resize();bodies.forEach(b=>{b.x=Math.min(b.x,W-b.r);b.y=Math.min(b.y,H-b.r);});draw();},120);});
-matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',draw);
-new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
-
+/* ---------- bouncy headline ---------- */
+const headline = $('headline');
+let li = 0;
+headline.querySelectorAll('.w').forEach(w => {
+  const text = w.textContent;
+  w.setAttribute('aria-hidden', 'true');
+  w.innerHTML = [...text].map(c => `<span class="ch" style="--i:${li++}">${esc(c)}</span>`).join('');
+});
+headline.querySelectorAll('.ch').forEach(ch => ch.addEventListener('animationend', e => {
+  if (e.animationName === 'pop' || e.animationName === 'jump') ch.classList.add('done');
+}));
+function jump() {
+  if (reduce) return;
+  headline.querySelectorAll('.ch').forEach(ch => { ch.classList.remove('done', 'again'); void ch.offsetWidth; ch.classList.add('again'); });
+}
+headline.addEventListener('click', jump);
+headline.closest('.hero').classList.add('ready');
+// gentle parallax: sharp (near) shapes move more than blurred (far) ones
+if (!reduce && matchMedia('(hover:hover)').matches) {
+  const hero = $('hero'), decos = [...hero.querySelectorAll('.deco')], depth = [28, 18, 8, 22];
+  hero.addEventListener('pointermove', e => {
+    const r = hero.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    decos.forEach((d, k) => { d.style.setProperty('--px', `${(-x * depth[k]).toFixed(1)}px`); d.style.setProperty('--py', `${(-y * depth[k]).toFixed(1)}px`); });
+  });
+  hero.addEventListener('pointerleave', () => decos.forEach(d => { d.style.removeProperty('--px'); d.style.removeProperty('--py'); }));
+}
 
 /* ---------- copy email ---------- */
 const copyBtn = $('copyBtn'), email = $('email');
@@ -292,7 +219,7 @@ function route() {
     document.title = TITLES[view] + ' · Taptales Studio';
   } else {
     document.title = 'Taptales Studio';
-    if (lastView !== 'home') { resize(); draw(); const t = h && document.getElementById(h); t ? t.scrollIntoView() : scrollTo(0, 0); }
+    if (lastView !== 'home') { const t = h && document.getElementById(h); t ? t.scrollIntoView() : scrollTo(0, 0); }
   }
   lastView = view;
 }
@@ -301,6 +228,6 @@ route();
 
 /* ---------- load content ---------- */
 getJSON('/products.json').then(renderProducts)
-  .catch(() => { $('productsLoading').textContent = "Products couldn't be loaded. Please refresh the page."; });
+  .catch(() => { const l = $('productsLoading'); if (l) l.textContent = "Games couldn't be loaded. Please refresh the page."; });
 getJSON('/site.json').then(renderSite).catch(() => {});
 })();
