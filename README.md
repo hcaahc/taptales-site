@@ -82,3 +82,24 @@ Mỗi mục lớn dùng **Heading 2** — website tự đánh số 01, 02… và
 - Terms & Conditions: `https://taptales.net/#terms`
 - Privacy Policy: `https://taptales.net/#privacy`
 - Product & Service Policy: `https://taptales.net/#policy`
+
+---
+
+## Đường dẫn pháp lý cố định (dùng chung cho mọi game)
+
+Mọi game và app của Taptales Studio dùng **chung** các đường dẫn sau. Ghi đúng các đường dẫn này vào App Store Connect và Google Play Console, và **không bao giờ đổi**:
+
+| Mục | Đường dẫn |
+|---|---|
+| Privacy Policy | `https://taptales.net/privacy/` |
+| Terms & Conditions | `https://taptales.net/terms/` |
+| Product & Service Policy | `https://taptales.net/policy/` |
+| Support | `https://taptales.net/support/` |
+
+Mỗi đường dẫn là một thư mục chứa `index.html` và tự chuyển tới trang tương ứng trên website. Muốn đổi giao diện website thì cứ đổi, miễn là giữ nguyên các thư mục này.
+
+**Khi phát hành thêm một game:**
+1. Nếu game dùng thêm dịch vụ bên thứ ba (quảng cáo, analytics, báo lỗi…): thêm dịch vụ đó vào mục **Third-Party Services** trong Privacy Policy (`privacy.json`), kèm mục đích và link chính sách của họ, **trước** khi nộp game.
+2. Khai báo App Privacy / Data safety trên store cho đúng với những gì game đó thật sự thu thập.
+3. Trong game: dẫn link tới `https://taptales.net/privacy/` và `support@taptales.net`.
+4. Đổi ngày **updated** nếu nội dung chính sách thay đổi.
