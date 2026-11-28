@@ -9,7 +9,12 @@
       "Casual",
       "Offline"
     ],
-    "links": [],
+    "links": [
+      {
+        "platform": "app-store",
+        "url": "https://apps.apple.com/app/id6819918385"
+      }
+    ],
     "icon": "/media/just-one-pixel-icon.png",
     "cover": "/media/just-one-pixel-cover.jpg",
     "screenshots": [],
